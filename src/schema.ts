@@ -27,6 +27,8 @@ const RootQuery = new GraphQLObjectType({
         try {
           return BookModel.find();
         } catch (error) {
+          console.log("get books error");
+          console.log(error);
           throw new Error("Error fetching books");
         }
       },
@@ -38,6 +40,8 @@ const RootQuery = new GraphQLObjectType({
         try {
           return BookModel.findById(args.id);
         } catch (error) {
+          console.log("get book error");
+          console.log(error);
           throw new Error("Error fetching book");
         }
       },
@@ -59,7 +63,43 @@ const Mutation = new GraphQLObjectType({
         try {
           return BookModel.create(args);
         } catch (error) {
+          console.log("addBook error");
+          console.log(error);
           throw new Error("Error adding book");
+        }
+      },
+    },
+    editBook: {
+      type: Book,
+      args: {
+        id: { type: GraphQLID },
+        title: { type: GraphQLString },
+        author: { type: GraphQLString },
+        stock: { type: GraphQLInt },
+      },
+      resolve(_, args) {
+        try {
+          const { id, ...rest } = args;
+          return BookModel.findByIdAndUpdate(id, rest);
+        } catch (error) {
+          console.log("editBook error");
+          console.log(error);
+          throw new Error("Error adding book");
+        }
+      },
+    },
+    deleteBook: {
+      type: Book,
+      args: {
+        id: { type: GraphQLString },
+      },
+      resolve(_, args) {
+        try {
+          return BookModel.findByIdAndDelete(args.id);
+        } catch (error) {
+          console.log("deleteBook error");
+          console.log(error);
+          throw new Error("Error deleting book");
         }
       },
     },
